@@ -1,41 +1,43 @@
 package a2;
 
 public class Item implements A2Item {
+	
+	private Node n;
 
 	@Override
-	public String getPerformer() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public String getPerformer() { return n.performer; }
 
 	@Override
-	public double getTransactionValue() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+	public double getTransactionValue() { return n.value; }
 
 	@Override
-	public String getDate() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public String getDate() { return n.date; }
 
 	@Override
-	public void setPerformer(String name) {
-		// TODO Auto-generated method stub
-
-	}
+	public void setPerformer(String name) { n.performer = name; }
 
 	@Override
-	public void setTransactionValue(double value) {
-		// TODO Auto-generated method stub
-
-	}
+	public void setTransactionValue(double value) { n.value = value; }
 
 	@Override
-	public void setDate(String date) {
-		// TODO Auto-generated method stub
+	public void setDate(String date) { n.date = date; }
 
+}
+
+class Node {
+	
+	public String performer, date;
+	public double value;
+	
+	public Node next;
+	
+	public Node(String performer, String date, double value) {
+		this(performer, date, value, null);
 	}
 
+	public Node(String performer, String date, double value, Node next) {
+		this.performer = performer; this.date = date;
+		this.value = value;
+		this.next = next;
+	}
 }
