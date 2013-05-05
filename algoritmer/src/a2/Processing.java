@@ -53,7 +53,7 @@ public class Processing implements A2Processing {
 	@Override
 	public boolean isOutlier(Item item, double thresholdLow,
 			double thresholdHigh) {
-		// TODO Auto-generated method stub
+		
 		return false;
 	}
 
