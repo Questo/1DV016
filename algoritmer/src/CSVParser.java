@@ -14,7 +14,7 @@ public class CSVParser {
 	public static void main(String[] args) throws Exception {
 		
 		BufferedReader CSVFile =
-				new BufferedReader(new FileReader("/home/mathias/a2/input.csv"));
+				new BufferedReader(new FileReader("/home/mathias/1.csv"));
 		
 		String dataRow = CSVFile.readLine(); // read fist line.
 		
