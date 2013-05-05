@@ -2,42 +2,31 @@ package a2;
 
 public class Item implements A2Item {
 	
-	private Node n;
+	private String performer, date;
+	private double value;
+	
+	public Item(String p, String d, double v) {
+		performer = p; date = d;
+		value = v;
+	}
 
 	@Override
-	public String getPerformer() { return n.performer; }
+	public String getPerformer() { return performer; }
 
 	@Override
-	public double getTransactionValue() { return n.value; }
+	public double getTransactionValue() { return value; }
 
 	@Override
-	public String getDate() { return n.date; }
+	public String getDate() { return date; }
 
 	@Override
-	public void setPerformer(String name) { n.performer = name; }
+	public void setPerformer(String name) { performer = name; }
 
 	@Override
-	public void setTransactionValue(double value) { n.value = value; }
+	public void setTransactionValue(double value) { this.value = value; }
 
 	@Override
-	public void setDate(String date) { n.date = date; }
+	public void setDate(String date) { this.date = date; }
 
 }
 
-class Node {
-	
-	public String performer, date;
-	public double value;
-	
-	public Node next;
-	
-	public Node(String performer, String date, double value) {
-		this(performer, date, value, null);
-	}
-
-	public Node(String performer, String date, double value, Node next) {
-		this.performer = performer; this.date = date;
-		this.value = value;
-		this.next = next;
-	}
-}
