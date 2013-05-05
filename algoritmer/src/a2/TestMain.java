@@ -19,8 +19,10 @@ public class TestMain {
 		Processing p = new Processing();
 
 		Collections.sort(a, p.getTransactionDateComparator());
+		Collections.sort(a, p.getTransactionValueComparator());
 		
 		for(int i = a.size(); --i >= 0;) {
+			System.out.print(a.get(i).getTransactionValue() +"\t");
 			System.out.println(a.get(i).getDate());
 		}
 
