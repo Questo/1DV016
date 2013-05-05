@@ -14,8 +14,8 @@ public class Processing implements A2Processing {
 			@Override
 			public int compare(Item o1, Item o2) {
 				double delta = o1.getTransactionValue() - o2.getTransactionValue();
-				if(delta < 0) return -1;
-				if(delta > 0) return 1;
+				if(delta > 0) return -1;
+				if(delta < 0) return 1;
 				return 0;
 			}
 		};
@@ -42,11 +42,9 @@ public class Processing implements A2Processing {
 			System.exit(1);
 		}
 		
+		// special case
 		if(percentile == 100)
 			return items.get(items.size()-1).getTransactionValue();
-		
-//		if(percentile == 0)
-//			return items.get(0).getTransactionValue();
 		
 		double n = ((percentile*items.size())/100) + 0.5;
 		return items.get((int) n).getTransactionValue();
