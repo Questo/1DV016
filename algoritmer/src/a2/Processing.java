@@ -16,6 +16,7 @@ public class Processing implements A2Processing {
 				double delta = o1.getTransactionValue() - o2.getTransactionValue();
 				if(delta > 0) return -1;
 				if(delta < 0) return 1;
+
 				return 0;
 			}
 		};
@@ -55,7 +56,7 @@ public class Processing implements A2Processing {
 			double thresholdHigh) {
 		double value = item.getTransactionValue();
 		
-		if(thresholdLow < value && value < thresholdHigh)
+		if(thresholdLow <= value && value <= thresholdHigh)
 			return true;
 		
 		return false;
@@ -64,7 +65,13 @@ public class Processing implements A2Processing {
 	@Override
 	public double thresholdDistance(Item item, double thresholdLow,
 			double thresholdHigh) {
-		return 0;
+		// method calls are more expensive than variable assignments?
+		double value = item.getTransactionValue();
+		
+		double d1 = Math.abs(thresholdHigh - value);
+		double d2 = Math.abs(thresholdLow - value);
+		
+		return d1 < d2 ? d1 : d2;
 	}
 
 	@Override
