@@ -53,6 +53,10 @@ public class Processing implements A2Processing {
 	@Override
 	public boolean isOutlier(Item item, double thresholdLow,
 			double thresholdHigh) {
+		double value = item.getTransactionValue();
+		
+		if(thresholdLow < value && value < thresholdHigh)
+			return true;
 		
 		return false;
 	}
@@ -60,13 +64,11 @@ public class Processing implements A2Processing {
 	@Override
 	public double thresholdDistance(Item item, double thresholdLow,
 			double thresholdHigh) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public Comparator<Item> getThresholdDistanceComparator() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
