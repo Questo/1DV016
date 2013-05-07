@@ -5,7 +5,8 @@ import java.util.List;
 
 public class Processing implements A2Processing {
 	
-	private Comparator valueComp, dateComp, thresholdComp;
+	private Comparator<Item> valueComp, dateComp, thresholdComp;
+	private int thresholdLow, thresholdHigh;
 
 	@Override
 	public Comparator<Item> getTransactionValueComparator() {
