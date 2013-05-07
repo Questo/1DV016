@@ -5,6 +5,8 @@ import java.util.List;
 
 public class Processing implements A2Processing {
 	
+	private Processing p;
+	
 	private Comparator<Item> valueComp, dateComp, thresholdComp;
 	private int thresholdLow, thresholdHigh;
 
@@ -81,6 +83,11 @@ public class Processing implements A2Processing {
 
 			@Override
 			public int compare(Item o1, Item o2) {
+				double delta = p.thresholdDistance(o1, thresholdLow, thresholdHigh)
+						- p.thresholdDistance(o2, thresholdLow, thresholdHigh);
+				
+				if(delta > 0) return -1;
+				if(delta < 0) return 1;
 				return 0;
 			}
 		};
