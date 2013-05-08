@@ -17,6 +17,7 @@ public class CSVParser {
 				new BufferedReader(new FileReader("/home/mathias/1.csv"));
 		
 		String dataRow = CSVFile.readLine(); // read fist line.
+		System.out.println(dataRow);
 		
 		while(dataRow != null) {
 			String[] dataArray = dataRow.split(",");
