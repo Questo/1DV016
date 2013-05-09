@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Main implements A2Main {
@@ -12,7 +13,7 @@ public class Main implements A2Main {
 	private double low, high; // percentile
 	private int ioi; // item of interest
 	
-	private List<Item> items;
+	private ArrayList<Item> items = new ArrayList<>();
 
 	@Override
 	public List<Item> readCSVFile(String filename) {
@@ -22,12 +23,61 @@ public class Main implements A2Main {
 			
 			String line = br.readLine();
 			while(line != null) {
+				String[] itemArray = line.split(",");
+				
+				items.add(new Item(
+						itemArray[0],
+						Double.valueOf(itemArray[1]),
+						itemArray[2]));
+				
+				line = br.readLine();
 			}
 		} catch (Exception e2) {
 			e2.printStackTrace();
 		}
 		
+		System.out.println("List-size: " + items.size());
+		return items;
+	}
+
+	private Item parseLine(String line) {
+		StringBuilder sb = new StringBuilder();
+		String performer = "", date = "";
+		double value = 0;
+		
+		for(int i = 0; i < line.length(); i++) {
+			if(line.charAt(i) == ',' || i + 2 > line.length()) {
+				if(sb.toString().matches("\\d{4}-\\d{2}-\\d{2}")) // date
+					date = sb.toString();
+//				if(sb.toString().length() == 10)
+//					date = sb.toString();
+				else if(sb.toString().matches("\\d.*")) // value
+					value = Double.valueOf(sb.toString());
+				else if(sb.toString().matches("\\w.*"))
+					performer = sb.toString();
+				
+				// reset stringbuilder
+				sb = new StringBuilder();
+			} else {
+				sb.append(line.charAt(i));
+			}
+		}
+		
+		System.out.println("Performer: " + performer + " Date: " + date + " Value: " + value);
+		
 		return null;
+	}
+
+	private String getPerformer(String line) {
+		String p = "";
+		for(int i = line.length(); --i >= 0;) {
+			if(line.charAt(i) == ',') {
+				p = line.substring(0, i-1);
+				line = line.substring(i+1, line.length());
+				break;
+			}
+		}
+		return p;
 	}
 
 	@Override
