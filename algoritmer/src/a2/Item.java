@@ -5,9 +5,9 @@ public class Item implements A2Item {
 	private String performer, date;
 	private double value;
 	
-	public Item(String p, String d, double v) {
-		performer = p; date = d;
-		value = v;
+	public Item(String performer, double value, String date) {
+		this.performer = performer; this.date = date;
+		this.value = value;
 	}
 
 	@Override
