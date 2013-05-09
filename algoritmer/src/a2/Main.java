@@ -96,7 +96,7 @@ public class Main implements A2Main {
 		System.out.println("TRANSACTIONS:");
 		for(int i = 0; i < items.size(); i++) {
 			if(processing.isOutlier(items.get(i), lowThreshold, highThreshold))
-				System.out.println(items.get(i).toString() + "\t ( !!! )");
+				System.out.println(items.get(i).toString() + "\t ( ¯\\_(ツ)_/¯ )");
 			else
 				System.out.println(items.get(i).toString());
 		}
