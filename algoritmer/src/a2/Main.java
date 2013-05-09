@@ -5,9 +5,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Main implements A2Main {
+	
+	private Processing p = new Processing();
 	
 	private String file;
 	private double low, high; // percentile
@@ -32,53 +35,49 @@ public class Main implements A2Main {
 				
 				line = br.readLine();
 			}
+			br.close();
 		} catch (Exception e2) {
 			e2.printStackTrace();
 		}
 		
 		System.out.println("List-size: " + items.size());
+		Collections.sort(items, p.getTransactionValueComparator());
+		
+		for(int i = items.size(); --i >= 0;) {
+			System.out.print(items.get(i).getTransactionValue() +"\t");
+			System.out.println(items.get(i).getDate());
+		}
+		
 		return items;
 	}
 
-	private Item parseLine(String line) {
-		StringBuilder sb = new StringBuilder();
-		String performer = "", date = "";
-		double value = 0;
-		
-		for(int i = 0; i < line.length(); i++) {
-			if(line.charAt(i) == ',' || i + 2 > line.length()) {
-				if(sb.toString().matches("\\d{4}-\\d{2}-\\d{2}")) // date
-					date = sb.toString();
-//				if(sb.toString().length() == 10)
+//	private Item parseLine(String line) {
+//		StringBuilder sb = new StringBuilder();
+//		String performer = "", date = "";
+//		double value = 0;
+//		
+//		for(int i = 0; i < line.length(); i++) {
+//			if(line.charAt(i) == ',' || i + 2 > line.length()) {
+//				if(sb.toString().matches("\\d{4}-\\d{2}-\\d{2}")) // date
 //					date = sb.toString();
-				else if(sb.toString().matches("\\d.*")) // value
-					value = Double.valueOf(sb.toString());
-				else if(sb.toString().matches("\\w.*"))
-					performer = sb.toString();
-				
-				// reset stringbuilder
-				sb = new StringBuilder();
-			} else {
-				sb.append(line.charAt(i));
-			}
-		}
-		
-		System.out.println("Performer: " + performer + " Date: " + date + " Value: " + value);
-		
-		return null;
-	}
-
-	private String getPerformer(String line) {
-		String p = "";
-		for(int i = line.length(); --i >= 0;) {
-			if(line.charAt(i) == ',') {
-				p = line.substring(0, i-1);
-				line = line.substring(i+1, line.length());
-				break;
-			}
-		}
-		return p;
-	}
+////				if(sb.toString().length() == 10)
+////					date = sb.toString();
+//				else if(sb.toString().matches("\\d.*")) // value
+//					value = Double.valueOf(sb.toString());
+//				else if(sb.toString().matches("\\w.*"))
+//					performer = sb.toString();
+//				
+//				// reset stringbuilder
+//				sb = new StringBuilder();
+//			} else {
+//				sb.append(line.charAt(i));
+//			}
+//		}
+//		
+//		System.out.println("Performer: " + performer + " Date: " + date + " Value: " + value);
+//		
+//		return null;
+//	}
 
 	@Override
 	public double lowThresholdValue(List<Item> items, A2Processing processing,
