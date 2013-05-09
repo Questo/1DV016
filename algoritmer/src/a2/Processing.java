@@ -85,8 +85,8 @@ public class Processing implements A2Processing {
 				double delta = thresholdDistance(o1, thresholdLow, thresholdHigh)
 						- thresholdDistance(o2, thresholdLow, thresholdHigh);
 				
-				if(delta > 0) return -1;
-				if(delta < 0) return 1;
+				if(delta < 0) return -1;
+				if(delta > 0) return 1;
 				return 0;
 			}
 		};
