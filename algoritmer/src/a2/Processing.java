@@ -6,6 +6,7 @@ import java.util.List;
 public class Processing implements A2Processing {
 	
 	private Comparator<Item> valueComp, dateComp, thresholdComp;
+	public double thresholdLow, thresholdHigh;
 
 	@Override
 	public Comparator<Item> getTransactionValueComparator() {
@@ -14,8 +15,8 @@ public class Processing implements A2Processing {
 			@Override
 			public int compare(Item o1, Item o2) {
 				double delta = o1.getTransactionValue() - o2.getTransactionValue();
-				if(delta > 0) return -1;
-				if(delta < 0) return 1;
+				if(delta < 0) return -1;
+				if(delta > 0) return 1;
 
 				return 0;
 			}
@@ -30,7 +31,7 @@ public class Processing implements A2Processing {
 
 			@Override
 			public int compare(Item o1, Item o2) {
-				return o1.getPerformer().compareTo(o2.getPerformer());
+				return o1.getDate().compareTo(o2.getDate());
 			}
 		};
 		return dateComp;
@@ -56,10 +57,11 @@ public class Processing implements A2Processing {
 			double thresholdHigh) {
 		double value = item.getTransactionValue();
 		
-		if(thresholdLow <= value && value <= thresholdHigh)
-			return true;
+		//if(value >= thresholdHigh || value <= thresholdLow)
+//		if(thresholdLow >= value || value >= thresholdHigh)
+//			return true;
 		
-		return false;
+		return thresholdLow >= value || value >= thresholdHigh;
 	}
 
 	@Override
@@ -80,9 +82,8 @@ public class Processing implements A2Processing {
 
 			@Override
 			public int compare(Item o1, Item o2) {
-//				double delta = thresholdDistance(o1, thresholdLow, thresholdHigh)
-//						- thresholdDistance(o2, thresholdLow, thresholdHigh);
-				double delta = 0;
+				double delta = thresholdDistance(o1, thresholdLow, thresholdHigh)
+						- thresholdDistance(o2, thresholdLow, thresholdHigh);
 				
 				if(delta > 0) return -1;
 				if(delta < 0) return 1;

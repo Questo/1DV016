@@ -27,6 +27,16 @@ public class Item implements A2Item {
 
 	@Override
 	public void setDate(String date) { this.date = date; }
+	
+	public String toString() {
+		return getDate() +
+				"\t" +
+				getPerformer() 
+				+ "\t" 
+				+ "$" 
+				+ getTransactionValue()
+				+ " million";
+	}
 
 }
 

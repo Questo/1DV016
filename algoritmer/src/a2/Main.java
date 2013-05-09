@@ -1,20 +1,22 @@
 package a2;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main implements A2Main {
 	
 	private Processing p = new Processing();
 	
 	private String file;
-	private double low, high; // percentile
-	private int ioi; // item of interest
+	private double low, high;
+	
+	private int hPercentile, lPercentile;
+	private int ioi;
+	
 	
 	private ArrayList<Item> items = new ArrayList<>();
 
@@ -25,7 +27,7 @@ public class Main implements A2Main {
 					new BufferedReader(new FileReader(filename));
 			
 			String line = br.readLine();
-			while(line != null) {
+			while(line != null && line.length() != 0) {
 				String[] itemArray = line.split(",");
 				
 				items.add(new Item(
@@ -40,13 +42,7 @@ public class Main implements A2Main {
 			e2.printStackTrace();
 		}
 		
-		System.out.println("List-size: " + items.size());
 		Collections.sort(items, p.getTransactionValueComparator());
-		
-		for(int i = items.size(); --i >= 0;) {
-			System.out.print(items.get(i).getTransactionValue() +"\t");
-			System.out.println(items.get(i).getDate());
-		}
 		
 		return items;
 	}
@@ -80,30 +76,36 @@ public class Main implements A2Main {
 //	}
 
 	@Override
-	public double lowThresholdValue(List<Item> items, A2Processing processing,
+	public double lowThresholdValue(List<Item> items, Processing processing,
 			int lowPercentile) {
-		// TODO Auto-generated method stub
-		return 0;
+		return processing.percentileValue(items, lowPercentile);
 	}
 
 	@Override
-	public double highThresholdValue(List<Item> items, A2Processing processing,
+	public double highThresholdValue(List<Item> items, Processing processing,
 			int highPercentile) {
-		// TODO Auto-generated method stub
-		return 0;
+		return processing.percentileValue(items, highPercentile);
 	}
 
 	@Override
 	public void printTransactionsList(List<Item> items,
-			A2Processing processing, double lowThreshold, double highThreshold) {
-		// TODO Auto-generated method stub
+			Processing processing, double lowThreshold, double highThreshold) {
+		Collections.sort(items, processing.getTransactionDateComparator());
+		
+		System.out.println("TRANSCATIONS:");
+		for(int i = 0; i < items.size(); i++) {
+			if(processing.isOutlier(items.get(i), lowThreshold, highThreshold))
+				System.out.println(items.get(i).toString() + "\t ( !!! )");
+			else
+				System.out.println(items.get(i).toString());
+		}
+		
 		
 	}
 
 	@Override
 	public void printItemsOfInterest(List<Item> items, int m,
-			A2Processing processing, double lowThreshold, double highThreshold) {
-		// TODO Auto-generated method stub
+			Processing processing, double lowThreshold, double highThreshold) {
 		
 	}
 	
@@ -117,31 +119,54 @@ public class Main implements A2Main {
 	}
 	
 	private void parseArgs(String[] args) {
+		Scanner sc = new Scanner(System.in);
 		// 3 arguments, FILENAME, PERCENTILES LOW/HIGH AND ITEMS OF INTEREST
-		if(args.length < 4 || args[0].matches("--help") || args[0].matches("-h"))
-			printHelp();
-		
-		try {
-			for(int i = args.length; i-- >= 0;) {
-				if(args[i].matches("-f||--file"))
-					file = args[i+1];
-				else if(args[i].matches("-pL||--percentileLow"))
-					low = Double.valueOf(args[i+1]);
-				else if(args[i].matches("-pH||--percentileHigh"))
-					high = Double.valueOf(args[i+1]);
-				else
-					printHelp();
+		if(args.length < 4) {
+			System.out.print("Path to file: ");
+			file = sc.nextLine();
+			
+			System.out.print("Percentiles: ");
+			int d1 = sc.nextInt();
+			int d2 = sc.nextInt();
+			
+			if(d1 > d2) {
+				hPercentile = d1; lPercentile = d2;
+			} else {
+				hPercentile = d2; lPercentile = d1;
 			}
 			
-		} catch(Exception e1) {
-			printHelp();
+			System.out.print("Number of items of interest: ");
+			ioi = sc.nextInt();
+				
+		}
+		else {
+			try {
+				for(int i = args.length; i-- >= 0;) {
+					if(args[i].matches("-f||--file"))
+						file = args[i+1];
+					else if(args[i].matches("-pL||--percentileLow"))
+						low = Double.valueOf(args[i+1]);
+					else if(args[i].matches("-pH||--percentileHigh"))
+						high = Double.valueOf(args[i+1]);
+					else
+						printHelp();
+				}
+			
+			} catch(Exception e1) {
+				printHelp();
+			}
 		}
 	}
 	
 	Main(String[] args) {
-		//parseArgs(args);
-		file = "/home/mathias/1.csv";
+		parseArgs(args);
+		
+		//file = "/home/mathias/1.csv";
 		readCSVFile(file);
+		low = lowThresholdValue(items, p, lPercentile);
+		high = highThresholdValue(items, p, hPercentile);
+		
+		printTransactionsList(items, p, low, high);
 	}
 	
 	public static void main(String[] args) { Main m = new Main(args); }
