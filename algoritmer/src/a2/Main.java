@@ -168,6 +168,7 @@ public class Main implements A2Main {
 		parseArgs(args);
 		
 		//file = "/home/mathias/1.csv";
+		long start = System.currentTimeMillis();
 		readCSVFile(file);
 		low = lowThresholdValue(items, p, lPercentile);
 		high = highThresholdValue(items, p, hPercentile);
@@ -175,8 +176,10 @@ public class Main implements A2Main {
 		p.thresholdLow = low;
 		p.thresholdHigh = high;
 		
+		//long start = System.currentTimeMillis();
 		printTransactionsList(items, p, low, high);
 		printItemsOfInterest(items, ioi, p, low, high);
+		System.out.println("\n" + (System.currentTimeMillis() - start) + "ms");
 	}
 	
 	public static void main(String[] args) { Main m = new Main(args); }
