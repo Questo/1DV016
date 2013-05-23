@@ -7,8 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 public class Graph implements A3Graph {
-	
+
 	ArrayList<Vertex> vertices = new ArrayList<>();
+	ArrayList<Integer> dfsList = new ArrayList<>();
 
 	@Override
 	public void addNode(int nodeItem) {
@@ -18,41 +19,46 @@ public class Graph implements A3Graph {
 	@Override
 	public void addEdge(int srcNodeItem, int tgtNodeItem) {
 		Vertex src = null, tgt = null;
-		
+
 		// find srcNodeItem
 		for(int i = 0; i <= vertices.size(); i++) {
 			if(vertices.get(i).data == srcNodeItem)
 				src = vertices.get(i);
-			if(vertices.get(i).data == tgtNodeItem)
+			else if(vertices.get(i).data == tgtNodeItem)
 				tgt = vertices.get(i);
-			
+
 			if(src != null && tgt != null) // found both Vertices
 				break;
 		}
-		
+
 		src.adj.add(tgt);
 	}
 
 	@Override
 	public boolean hasNode(int nodeItem) {
-		return vertices.contains(nodeItem); // does this even work?
+		for(int i = 0; i <= vertices.size(); i++) {
+			if(vertices.get(i).data == nodeItem)
+				return true;
+		}
+		
+		return false;
 	}
 
 	@Override
 	public boolean hasEdge(int srcNodeItem, int tgtNodeItem) {
 		Vertex src = null, tgt = null;
-		
+
 		for(int i = 0; i <= vertices.size(); i++) {
 			if(vertices.get(i).data == srcNodeItem)
 				src = vertices.get(i);
 			if(vertices.get(i).data == tgtNodeItem)
 				tgt = vertices.get(i);
-			
+
 			if(src != null && tgt != null) // found both Vertices
 				break;
 		}
-		
-		
+
+
 		return src.adj.contains(tgt);
 	}
 
@@ -72,11 +78,19 @@ public class Graph implements A3Graph {
 			System.out.println();
 		}
 	}
+	
+	public void dfs(Vertex v) {
+		v.visited = false;
+		System.out.print(v.data + " --> ");
+		for(Vertex w : v.adj) {
+			if(!w.visited)
+				dfs(w);
+		}
+	}
 
 	@Override
 	public List<Integer> visitDFS() {
-		// TODO Auto-generated method stub
-		return null;
+		return dfsList;
 	}
 
 	@Override
@@ -118,15 +132,16 @@ public class Graph implements A3Graph {
 }
 
 class Vertex {
-	
+
 	public LinkedList<Vertex> adj; // Adjacency list to hold edges
-	public boolean known;
+	public boolean visited;
 	public Vertex path;
 	public int data;
-	
+
 	public Vertex(int nodeItem) {
 		data = nodeItem;
 		adj = new LinkedList<Vertex>();
+		visited = false;
 	}
-	
+
 }
