@@ -5,11 +5,14 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 public class Graph implements A3Graph {
 
 	ArrayList<Vertex> vertices = new ArrayList<>();
+	
 	ArrayList<Integer> dfsList = new ArrayList<>();
+	ArrayList<Integer> bfsList = new ArrayList<>();
 
 	@Override
 	public void addNode(int nodeItem) {
@@ -79,9 +82,14 @@ public class Graph implements A3Graph {
 		}
 	}
 	
+	public void resetVertices() {
+		for(Vertex v : vertices)
+			v.visited = false;
+	}
+	
 	public void dfs(Vertex v) {
 		v.visited = false;
-		System.out.print(v.data + " --> ");
+		dfsList.add(v.data);
 		for(Vertex w : v.adj) {
 			if(!w.visited)
 				dfs(w);
@@ -92,16 +100,38 @@ public class Graph implements A3Graph {
 	public List<Integer> visitDFS() {
 		return dfsList;
 	}
+	
+	public void bfs(Vertex v) {
+		Vertex u;
+		resetVertices();
+		
+		Queue<Vertex> q = new LinkedList<Vertex>();
+		bfsList.add(v.data);
+		v.visited = true;
+		q.add(v);
+		
+		while(!q.isEmpty()) {
+			u = q.remove();
+			for(Vertex w : u.adj) {
+				if(!w.visited) {
+					bfsList.add(w.data);
+					w.visited = true;
+					q.add(w);
+				}
+			}
+		}
+	}
 
 	@Override
 	public List<Integer> visitBFS() {
-		// TODO Auto-generated method stub
-		return null;
+		return bfsList;
 	}
 
 	@Override
 	public boolean hasSelfLoops() {
-		// TODO Auto-generated method stub
+		for(Vertex v : vertices) {
+		}
+		
 		return false;
 	}
 
@@ -134,8 +164,9 @@ public class Graph implements A3Graph {
 class Vertex {
 
 	public LinkedList<Vertex> adj; // Adjacency list to hold edges
+	
 	public boolean visited;
-	public Vertex path;
+	
 	public int data;
 
 	public Vertex(int nodeItem) {
