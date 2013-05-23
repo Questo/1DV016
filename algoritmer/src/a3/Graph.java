@@ -1,44 +1,76 @@
 package a3;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 public class Graph implements A3Graph {
+	
+	ArrayList<Vertex> vertices = new ArrayList<>();
 
 	@Override
 	public void addNode(int nodeItem) {
-		// TODO Auto-generated method stub
-
+		vertices.add(new Vertex(nodeItem));
 	}
 
 	@Override
 	public void addEdge(int srcNodeItem, int tgtNodeItem) {
-		// TODO Auto-generated method stub
-
+		Vertex src = null, tgt = null;
+		
+		// find srcNodeItem
+		for(int i = 0; i <= vertices.size(); i++) {
+			if(vertices.get(i).data == srcNodeItem)
+				src = vertices.get(i);
+			if(vertices.get(i).data == tgtNodeItem)
+				tgt = vertices.get(i);
+			
+			if(src != null && tgt != null) // found both Vertices
+				break;
+		}
+		
+		src.adj.add(tgt);
 	}
 
 	@Override
 	public boolean hasNode(int nodeItem) {
-		// TODO Auto-generated method stub
-		return false;
+		return vertices.contains(nodeItem); // does this even work?
 	}
 
 	@Override
 	public boolean hasEdge(int srcNodeItem, int tgtNodeItem) {
-		// TODO Auto-generated method stub
-		return false;
+		Vertex src = null, tgt = null;
+		
+		for(int i = 0; i <= vertices.size(); i++) {
+			if(vertices.get(i).data == srcNodeItem)
+				src = vertices.get(i);
+			if(vertices.get(i).data == tgtNodeItem)
+				tgt = vertices.get(i);
+			
+			if(src != null && tgt != null) // found both Vertices
+				break;
+		}
+		
+		
+		return src.adj.contains(tgt);
 	}
 
 	@Override
 	public void printAllNodes() {
-		// TODO Auto-generated method stub
-
+		for(Iterator<Vertex> i = vertices.iterator(); i.hasNext();)
+			System.out.println(i.next().data);
 	}
 
 	@Override
 	public void printAllEdges() {
-		// TODO Auto-generated method stub
-
+		for(Iterator<Vertex> i = vertices.iterator(); i.hasNext();) {
+			Vertex v = i.next();
+			System.out.print(v.data + ": ");
+			for(Vertex edge : v.adj)
+				System.out.print(edge.data + " ");
+			System.out.println();
+		}
 	}
 
 	@Override
@@ -83,4 +115,18 @@ public class Graph implements A3Graph {
 		return null;
 	}
 
+}
+
+class Vertex {
+	
+	public LinkedList<Vertex> adj; // Adjacency list to hold edges
+	public boolean known;
+	public Vertex path;
+	public int data;
+	
+	public Vertex(int nodeItem) {
+		data = nodeItem;
+		adj = new LinkedList<Vertex>();
+	}
+	
 }
