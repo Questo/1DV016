@@ -13,8 +13,8 @@ public interface A3Graph {
 	public void printAllNodes();
 	public void printAllEdges();
 	
-	public List<Integer> visitDFS();
-	public List<Integer> visitBFS();
+	public List<Integer> visitDFS(Vertex s);
+	public List<Integer> visitBFS(Vertex s);
 	
 	public boolean hasSelfLoops();
 	public boolean isConnected();
