@@ -1,3 +1,7 @@
+/* From the visionary mind that brought you
+ * Assignment 1 & Assignment 2, comes now the nail biting
+ * final conclusion to the 1DV016 Assignment saga.
+ */
 package a3;
 
 import java.util.ArrayList;
@@ -12,6 +16,8 @@ public class MyGraph implements A3Graph {
 	
 	ArrayList<Integer> dfsList = new ArrayList<Integer>();
 	ArrayList<Integer> bfsList = new ArrayList<Integer>();
+	
+	boolean cycle = false;
 
 	
 	Vertex src, tgt;
@@ -21,8 +27,18 @@ public class MyGraph implements A3Graph {
 		vertices.add(new Vertex(nodeItem));
 	}
 	
+	public Vertex findNode(int nodeItem) {
+		Vertex s = null;
+		for(Vertex v : vertices) {
+			if(v.nodeItem == nodeItem)
+				s = v; 
+		}
+		return s;
+	}
+	
 	public void findNodes(int srcNodeItem, int tgtNodeItem) {
 		src = tgt = null;
+		
 		for(Vertex v : vertices) {
 			if(src != null && tgt != null)
 				break;
@@ -32,11 +48,23 @@ public class MyGraph implements A3Graph {
 				tgt = v;
 		}
 	}
+	
+	public void clearVisited() {
+		for(Vertex v : vertices)
+			v.visited = false;
+	}
 
 	@Override
 	public void addEdge(int srcNodeItem, int tgtNodeItem) {
-		findNodes(srcNodeItem, tgtNodeItem);
-		src.edges.add(tgt);
+		if(srcNodeItem == tgtNodeItem) {
+			Vertex s = findNode(srcNodeItem);
+			s.edges.add(s);
+			s.selfLoop = true;
+		}
+		else {
+			findNodes(srcNodeItem, tgtNodeItem);
+			src.edges.add(tgt);
+		}
 	}
 
 	@Override
@@ -71,24 +99,30 @@ public class MyGraph implements A3Graph {
 	}
 
 	@Override
-	public List<Integer> visitDFS(Vertex s) {
-		s.visited = false;
-		dfsList.add(s.nodeItem);
-		for(Vertex v : s.edges) {
-			if(!v.visited)
-				visitDFS(v);
-		}
+	public List<Integer> visitDFS(int startNodeItem) {
+		dfs(findNode(startNodeItem));
 		return dfsList;
 	}
 	
+	public void dfs(Vertex s) {
+		s.visited = true;
+		dfsList.add(s.nodeItem);
+		for(Vertex v : s.edges) {
+			if(!v.visited)
+				dfs(v);
+			else
+				cycle = true;
+		}
+	}
+	
 	@Override
-	public List<Integer> visitBFS(Vertex s) {
-		for(Vertex v : vertices)
-			v.visited = false;
+	public List<Integer> visitBFS(int startNodeItem) {
+		clearVisited();
 		
 		Vertex u;
 		
 		Queue<Vertex> q = new LinkedList<Vertex>();
+		Vertex s = findNode(startNodeItem);
 		bfsList.add(s.nodeItem);
 		s.visited = true;
 		q.add(s);
@@ -109,12 +143,16 @@ public class MyGraph implements A3Graph {
 	@Override
 	public boolean hasSelfLoops() {
 		for(Vertex v : vertices) {
-			int tmp = v.nodeItem;
-			for(Vertex e : v.edges) {
-				if(e.nodeItem == tmp)
-					return true;
-			}
+			if(v.selfLoop)
+				return true;
 		}
+//		for(Vertex v : vertices) {
+//			int tmp = v.nodeItem;
+//			for(Vertex e : v.edges) {
+//				if(e.nodeItem == tmp)
+//					return true;
+//			}
+//		}
 		return false;
 	}
 
@@ -127,16 +165,20 @@ public class MyGraph implements A3Graph {
 		return true;
 	}
 
+	// is there a path A-B and B-A
 	@Override
 	public boolean hasTwoCycles() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean hasCycles() {
-		// TODO Auto-generated method stub
-		return false;
+		cycle = false;
+		clearVisited();
+		for(Vertex v : vertices) {
+			dfs(v);
+		}
+		return cycle;
 	}
 
 	@Override
@@ -158,12 +200,12 @@ public class MyGraph implements A3Graph {
 class Vertex {
 	
 	public ArrayList<Vertex> edges;
-	public boolean visited;
+	public boolean visited, selfLoop;
 	public int nodeItem;
 	
 	public Vertex(int nodeItem) {
 		this.nodeItem = nodeItem;
 		edges = new ArrayList<Vertex>();
-		visited = false;
+		visited = selfLoop = false;
 	}
 }
