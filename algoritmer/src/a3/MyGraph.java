@@ -1,14 +1,20 @@
 /* From the visionary mind that brought you
  * Assignment 1 & Assignment 2, comes now the nail biting
  * final conclusion to the 1DV016 Assignment saga.
+ * 
+ * ma222ce presents:
+ * 		ASSIGNMENT 3
  */
 package a3;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+
+import javax.swing.plaf.ListUI;
 
 public class MyGraph implements A3Graph {
 	
@@ -17,9 +23,9 @@ public class MyGraph implements A3Graph {
 	ArrayList<Integer> dfsList = new ArrayList<Integer>();
 	ArrayList<Integer> bfsList = new ArrayList<Integer>();
 	
-	boolean cycle = false;
+	boolean cycle = false, selfloop = false;
+	int cnt = 0;
 
-	
 	Vertex src, tgt;
 
 	@Override
@@ -49,9 +55,10 @@ public class MyGraph implements A3Graph {
 		}
 	}
 	
-	public void clearVisited() {
+	public void clear() {
 		for(Vertex v : vertices)
 			v.visited = false;
+		cnt = 0;
 	}
 
 	@Override
@@ -59,7 +66,7 @@ public class MyGraph implements A3Graph {
 		if(srcNodeItem == tgtNodeItem) {
 			Vertex s = findNode(srcNodeItem);
 			s.edges.add(s);
-			s.selfLoop = true;
+			selfloop = true;
 		}
 		else {
 			findNodes(srcNodeItem, tgtNodeItem);
@@ -117,7 +124,7 @@ public class MyGraph implements A3Graph {
 	
 	@Override
 	public List<Integer> visitBFS(int startNodeItem) {
-		clearVisited();
+		clear();
 		
 		Vertex u;
 		
@@ -142,39 +149,41 @@ public class MyGraph implements A3Graph {
 
 	@Override
 	public boolean hasSelfLoops() {
-		for(Vertex v : vertices) {
-			if(v.selfLoop)
-				return true;
+		return selfloop;
+	}
+	
+	public void connectivity(Vertex s) {
+		s.visited = true;
+		cnt++;
+		System.out.println("Node: " + s.nodeItem + " cnt: " + cnt);
+		for(Vertex v : s.edges) {
+			if(!v.visited)
+				connectivity(v);
 		}
-//		for(Vertex v : vertices) {
-//			int tmp = v.nodeItem;
-//			for(Vertex e : v.edges) {
-//				if(e.nodeItem == tmp)
-//					return true;
-//			}
-//		}
-		return false;
 	}
 
 	@Override
 	public boolean isConnected() {
-		for(Vertex v : vertices) {
-			if(v.edges.size() == 0)
-				return false;
-		}
-		return true;
+		clear();
+		connectivity(vertices.get(0));
+		return cnt == vertices.size();
 	}
 
-	// is there a path A-B and B-A
 	@Override
 	public boolean hasTwoCycles() {
+		for(Vertex a : vertices) {
+			for(Vertex b : a.edges) {
+				if(b.edges.contains(a))
+					return true;
+			}
+		}
 		return false;
 	}
 
 	@Override
 	public boolean hasCycles() {
 		cycle = false;
-		clearVisited();
+		clear();
 		for(Vertex v : vertices) {
 			dfs(v);
 		}
@@ -183,16 +192,27 @@ public class MyGraph implements A3Graph {
 
 	@Override
 	public Map<Integer, List<Integer>> feedbackEdges() {
-		// TODO Auto-generated method stub
+		List<Integer> sources = new ArrayList<Integer>();
+		List<Integer> sinks = new ArrayList<Integer>();
+		
+		if(hasCycles() && hasTwoCycles() && !isConnected())
+			return null;
+		
+		for(Vertex v : vertices) {
+			for(Vertex e : v.edges) {
+				sinks.add(0, e.nodeItem); // prepend
+				v.edges.remove(e);
+			}
+			sources.add(v.nodeItem); // append
+			vertices.remove(v);
+		}
+		
+		List<Integer> list = new ArrayList<Integer>(sources);
+		list.addAll(sinks);
+		
+		Map<Integer, List<Integer>> map = new HashMap<Integer, List<Integer>>();
+		
 		return null;
-	}
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
 	}
 
 }
