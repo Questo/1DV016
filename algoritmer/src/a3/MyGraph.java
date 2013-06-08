@@ -70,6 +70,8 @@ public class MyGraph implements A3Graph {
 		}
 		else {
 			findNodes(srcNodeItem, tgtNodeItem);
+			src.outdegree++;
+			tgt.indegree++;
 			src.edges.add(tgt);
 		}
 	}
@@ -195,22 +197,25 @@ public class MyGraph implements A3Graph {
 		List<Integer> sources = new ArrayList<Integer>();
 		List<Integer> sinks = new ArrayList<Integer>();
 		
-		if(hasCycles() && hasTwoCycles() && !isConnected())
+		if(hasSelfLoops() && hasTwoCycles() && !isConnected())
 			return null;
 		
-		for(Vertex v : vertices) {
-			for(Vertex e : v.edges) {
-				sinks.add(0, e.nodeItem); // prepend
-				v.edges.remove(e);
+		while(!vertices.isEmpty()) {
+			// find sinks and sources
+			for(Vertex v : vertices) {
+				if(v.indegree == 0)
+					sources.add(v.nodeItem); // append
+				else if(v.outdegree == 0)
+					sources.add(0, v.nodeItem); // prepend
 			}
-			sources.add(v.nodeItem); // append
-			vertices.remove(v);
 		}
 		
 		List<Integer> list = new ArrayList<Integer>(sources);
 		list.addAll(sinks);
 		
 		Map<Integer, List<Integer>> map = new HashMap<Integer, List<Integer>>();
+		for(int i = 0; i < list.size(); i++)
+			map.put(new Integer(i), list);
 		
 		return null;
 	}
@@ -221,10 +226,16 @@ class Vertex {
 	
 	public ArrayList<Vertex> edges;
 	public boolean visited, selfLoop;
-	public int nodeItem;
+	public int nodeItem, indegree, outdegree;
 	
 	public Vertex(int nodeItem) {
+		this(nodeItem, 0, 0);
+	}
+	
+	public Vertex(int nodeItem, int indegree, int outdegree) {
 		this.nodeItem = nodeItem;
+		this.indegree = indegree;
+		this.outdegree = outdegree;
 		edges = new ArrayList<Vertex>();
 		visited = selfLoop = false;
 	}
