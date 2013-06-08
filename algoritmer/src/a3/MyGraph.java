@@ -191,31 +191,69 @@ public class MyGraph implements A3Graph {
 		}
 		return cycle;
 	}
+	
+	// a sink vertex is a vertex with outdegree zero.
+	private Vertex getSink(ArrayList<Vertex> g) {
+		Vertex sink;
+		for(Vertex v : g) {
+			if(v.outdegree == 0) {
+				sink = v;
+				g.remove(v);
+				return sink;
+			}
+		}
+		return null;
+	}
+	
+	// a source vertex is a vertex with indegree zero
+	private Vertex getSource(ArrayList<Vertex> g) {
+		Vertex source;
+		for(Vertex v : g) {
+			if(v.indegree == 0) {
+				source = v;
+				g.remove(v);
+				return source;
+			}
+		}
+		return null;
+	}
+	
+	private Vertex magic(ArrayList<Vertex> g) {
+		Vertex magic = new Vertex();
+		for(Vertex v : g) {
+			if((v.outdegree - v.indegree) > (magic.outdegree - magic.indegree))
+				magic = v;
+		}
+		return magic;
+	}
 
 	@Override
 	public Map<Integer, List<Integer>> feedbackEdges() {
-		List<Integer> sources = new ArrayList<Integer>();
-		List<Integer> sinks = new ArrayList<Integer>();
-		
-		if(hasSelfLoops() && hasTwoCycles() && !isConnected())
+		if(hasSelfLoops() || hasTwoCycles() || !isConnected())
 			return null;
 		
-		while(!vertices.isEmpty()) {
-			// find sinks and sources
-			for(Vertex v : vertices) {
-				if(v.indegree == 0)
-					sources.add(v.nodeItem); // append
-				else if(v.outdegree == 0)
-					sources.add(0, v.nodeItem); // prepend
-			}
+		ArrayList<Vertex> g = vertices;
+		List<Vertex> s = new ArrayList<Vertex>();
+		List<Vertex> t = new ArrayList<Vertex>();
+		List<Vertex> list = new ArrayList<Vertex>();
+		
+		Vertex source, sink;
+		
+		while(!g.isEmpty()) {
+			while((sink = getSink(g)) != null)
+				t.add(0, sink); // prepend
+			
+			while((source = getSource(g)) != null)
+				s.add(source); // append
+			
+			if(!g.isEmpty())
+				s.add(magic(g));
 		}
 		
-		List<Integer> list = new ArrayList<Integer>(sources);
-		list.addAll(sinks);
+		list.addAll(s);
+		list.addAll(t);
 		
-		Map<Integer, List<Integer>> map = new HashMap<Integer, List<Integer>>();
-		for(int i = 0; i < list.size(); i++)
-			map.put(new Integer(i), list);
+		HashMap<Integer, List<Integer>> map = new HashMap<>();
 		
 		return null;
 	}
@@ -230,6 +268,10 @@ class Vertex {
 	
 	public Vertex(int nodeItem) {
 		this(nodeItem, 0, 0);
+	}
+	
+	public Vertex() {
+		this(0, 0, 0);
 	}
 	
 	public Vertex(int nodeItem, int indegree, int outdegree) {
