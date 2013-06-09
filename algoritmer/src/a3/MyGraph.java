@@ -70,6 +70,8 @@ public class MyGraph implements A3Graph {
 		}
 		else {
 			findNodes(srcNodeItem, tgtNodeItem);
+			if(tgt == null)
+				tgt = new Vertex(tgtNodeItem);
 			src.outdegree++;
 			tgt.indegree++;
 			src.edges.add(tgt);
@@ -272,7 +274,7 @@ public class MyGraph implements A3Graph {
 				map.put(current.nodeItem, intList);
 		}
 		
-		return null;
+		return map;
 	}
 
 }

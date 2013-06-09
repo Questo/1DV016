@@ -66,6 +66,11 @@ public class TestMain {
 			System.out.println("\nCYCLE FOUND");
 		else
 			System.out.println("\nNO CYCLE FOUND");
+		
+		if(g.hasTwoCycles())
+			System.out.println("\nTwo cycles found");
+		else
+			System.out.println("\nNo double cycles found");
 
 	}
 
