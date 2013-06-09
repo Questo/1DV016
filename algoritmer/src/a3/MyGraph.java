@@ -235,7 +235,7 @@ public class MyGraph implements A3Graph {
 		ArrayList<Vertex> g = vertices;
 		List<Vertex> s = new ArrayList<Vertex>();
 		List<Vertex> t = new ArrayList<Vertex>();
-		List<Vertex> list = new ArrayList<Vertex>();
+		List<Integer> list = new ArrayList<Integer>(); // ska det vara INTEGER HÄR
 		
 		Vertex source, sink;
 		
