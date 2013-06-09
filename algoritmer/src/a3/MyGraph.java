@@ -254,6 +254,8 @@ public class MyGraph implements A3Graph {
 		list.addAll(t);
 		
 		HashMap<Integer, List<Integer>> map = new HashMap<>();
+		for(int i = 0; i < list.size(); i++)
+			map.put(i, list.get(i)); // detta blir fel
 		
 		return null;
 	}
