@@ -55,8 +55,8 @@ public class MyGraph implements A3Graph {
 		}
 	}
 	
-	public void clear() {
-		for(Vertex v : vertices)
+	public void clear(ArrayList<Vertex> g) {
+		for(Vertex v : g)
 			v.visited = false;
 		cnt = 0;
 	}
@@ -126,7 +126,7 @@ public class MyGraph implements A3Graph {
 	
 	@Override
 	public List<Integer> visitBFS(int startNodeItem) {
-		clear();
+		clear(vertices);
 		
 		Vertex u;
 		
@@ -166,7 +166,7 @@ public class MyGraph implements A3Graph {
 
 	@Override
 	public boolean isConnected() {
-		clear();
+		clear(vertices);
 		connectivity(vertices.get(0));
 		return cnt == vertices.size();
 	}
@@ -185,7 +185,7 @@ public class MyGraph implements A3Graph {
 	@Override
 	public boolean hasCycles() {
 		cycle = false;
-		clear();
+		clear(vertices);
 		for(Vertex v : vertices) {
 			dfs(v);
 		}
@@ -235,7 +235,7 @@ public class MyGraph implements A3Graph {
 		ArrayList<Vertex> g = vertices;
 		List<Vertex> s = new ArrayList<Vertex>();
 		List<Vertex> t = new ArrayList<Vertex>();
-		List<Integer> list = new ArrayList<Integer>(); // ska det vara INTEGER HÄR
+		List<Vertex> list = new ArrayList<Vertex>();
 		
 		Vertex source, sink;
 		
@@ -254,8 +254,23 @@ public class MyGraph implements A3Graph {
 		list.addAll(t);
 		
 		HashMap<Integer, List<Integer>> map = new HashMap<>();
-		for(int i = 0; i < list.size(); i++)
-			map.put(i, list.get(i)); // detta blir fel
+		
+		Vertex current, previous;
+		
+		for(int i = 0; i < list.size(); i++) {
+			current = list.get(i);
+			ArrayList<Integer> intList = new ArrayList<Integer>();
+			
+			for(int k = 0; k < i; k++) {
+				previous = list.get(k);
+				
+				if(current.edges.contains(previous))
+					intList.add(previous.nodeItem);
+			}
+			
+			if(!intList.isEmpty())
+				map.put(current.nodeItem, intList);
+		}
 		
 		return null;
 	}
